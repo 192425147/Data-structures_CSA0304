@@ -1,0 +1,51 @@
+[T25,T34] B-tree, minimum degree t=2 (2-3-4 tree), insertion keys 10 20 5 6 12 30 7 17
+ insert 10
+   tree: [10]
+ insert 20
+   tree: [10 20]
+ insert 5
+   tree: [5 10 20]
+ insert 6
+   root is full -> tree grows one level
+    split full node [5 10 20]: median 10 moves up
+   tree: [10]{[5 6] [20]}
+ insert 12
+   tree: [10]{[5 6] [12 20]}
+ insert 30
+   tree: [10]{[5 6] [12 20 30]}
+ insert 7
+   tree: [10]{[5 6 7] [12 20 30]}
+ insert 17
+    split full node [12 20 30]: median 20 moves up
+   tree: [10 20]{[5 6 7] [12 17] [30]}
+ invariants: keys=8 (all leaves at the same depth, key counts within [t-1, 2t-1])
+
+[T36 small tree] searches (reads = nodes visited)
+ search 5   found=1 disk reads=2 (smallest)
+ search 30  found=1 disk reads=2 (largest)
+ search 4   found=0 disk reads=2 (missing)
+ search 18  found=0 disk reads=2 (missing)
+ search 99  found=0 disk reads=2 (missing)
+
+[T27] height of a B-tree of order m=100 (t=50) holding n=5,000,000 keys
+ worst case (every node has the minimum): h <= log_t((n+1)/2) = log_50(2500000.5) = 3.766 edges -> at most 4 levels (disk reads)
+ best case (every node full, 99 keys): levels = ceil(log_100(n+1)) = 4
+ capacity of a full tree with L levels (99 keys/node, 100 children): L=3 -> 999999 keys, L=4 -> 99999999 keys
+ binary comparison: ceil(log2(n+1)) = 23 levels; AVL worst 1.44*log2(n+2)-0.33 = 31.7 levels
+
+[T28] B-tree t=50 built from 5000000 random-order keys: levels=4, nodes=72868, avg keys per node=68.6, invariant check keys=5000000 (OK)
+      BST levels=56, AVL levels=27
+
+[T33,T35] 100000 random successful searches, one node = one disk block = one read of 10 ms
+ tree     avg visits        max avg time/search
+ BST           28.76         52       287.6 ms
+ AVL           21.66         26       216.6 ms
+ B-tree         3.99          4        39.9 ms
+
+[T36] boundary searches in the 5,000,000-key trees
+ smallest 0                     found=1 B-tree reads=4 (40 ms)    AVL visits=23 BST visits=14
+ largest 9999998                found=1 B-tree reads=4 (40 ms)    AVL visits=23 BST visits=16
+ missing 1 (inside range)       found=0 B-tree reads=4 (40 ms)    AVL visits=23 BST visits=14
+ missing 10000007 (above max)   found=0 B-tree reads=4 (40 ms)    AVL visits=23 BST visits=16
+ missing -5 (below min)         found=0 B-tree reads=4 (40 ms)    AVL visits=23 BST visits=14
+ reference: even a perfectly balanced binary tree of 5M keys needs 23 reads = 230 ms per search

@@ -1,0 +1,21 @@
+[T15] AVL insertions (tree printed as S-expression; '-' = empty)
+ insert 10 -> rotation: none (0 rotations) tree: 10   height(nodes)=1
+ insert 20 -> rotation: none (0 rotations) tree: (10 - 20)   height(nodes)=2
+ insert 30 -> rotation: RR   (1 rotation) tree: (20 10 30)   height(nodes)=2
+ insert 40 -> rotation: none (0 rotations) tree: (20 10 (30 - 40))   height(nodes)=3
+ insert 50 -> rotation: RR   (1 rotation) tree: (20 10 (40 30 50))   height(nodes)=3
+ insert 25 -> rotation: RL   (2 rotations) tree: (30 (20 10 25) (40 - 50))   height(nodes)=3
+
+[T16,T21-T24] n = 100000 keys
+ heights (levels on longest path): AVL sorted=17 AVL random=20 BST sorted=100000 BST random=38
+ rotations: AVL sorted total=99983 (LL=0 RR=99983 LR=0 RL=0)
+             AVL random total=69425 (LL=11752 RR=11727 LR=11467 RL=11506) = 0.694 per insertion
+ insertion time for 100000 keys (s): AVL sorted=0.0147 AVL random=0.0289 BST sorted=21.6535 BST random=0.0207
+ search (average over 20000 random successful searches):
+    AVL sorted  nodes visited per search =     15.71  time per search =     169.3 ns
+    AVL random  nodes visited per search =     16.00  time per search =     146.3 ns
+    BST sorted  nodes visited per search =  49829.38  time per search =  127209.9 ns
+    BST random  nodes visited per search =     21.36  time per search =     209.1 ns
+ verify AVL sorted : OK, 100000 nodes checked, largest |balance factor| = 1
+ verify AVL random : OK, 100000 nodes checked, largest |balance factor| = 1
+ bounds: log2(n+1)=17.61 (minimum possible levels = 17), 1.44*log2(n+2)-0.328=25.04 (AVL worst-case levels)

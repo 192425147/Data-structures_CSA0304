@@ -1,0 +1,48 @@
+sizeof(CN) = 12 bytes per compact node
+example words: cat car card care dog do -> nodes=10 (incl. root)
+ autocomplete(car): car card care
+ range [car, dog]: car card care cat do dog
+ spell(cax): car cat
+ spell(cr): car
+
+================ dictionary of 1000 words ================
+ words=1000, average length=8.14, longest=14 (sorted already, unique)
+ nodes=5961 (5.96 per word)
+ memory (MB): compact trie=0.1 (12 B/node) | 26-pointer trie=1.3 (216 B/node, computed) | sorted array=0.0 | AVL of strings=0.0
+ build time (s): compact trie from sorted list=0.000 AVL=0.000
+ weekly update: inserting 1000 new words into the trie = 0.32 ms (0.32 us per word)
+ VERIFY on a sample of 1000 words (compared with brute force over the sorted array):
+   exact look-up of existing words: 0 wrong | mistyped-word look-up: 0 wrong | autocomplete(first 10): 0 wrong | range listing (31 words): 0 wrong | spell suggestions (edit distance <=1): 0 wrong
+   spell check: mistyped words that received >=1 suggestion = 1000 of 1000 (average 1.01 suggestions)
+ response time per operation (average):
+   exact look-up         : compact trie      113 ns | sorted array      168 ns | AVL of strings      125 ns
+   autocomplete (10)     : compact trie      249 ns | sorted array      203 ns
+   range listing (~100) : compact trie     11.2 us | sorted array      0.3 us    (avg 96 words returned)
+   spell suggestions (<=1 edit): compact trie      4.4 us (avg 1.0 suggestions) | scan every word     14.9 us
+
+================ dictionary of 200000 words ================
+ words=200000, average length=8.55, longest=15 (sorted already, unique)
+ nodes=889184 (4.45 per word)
+ memory (MB): compact trie=10.7 (12 B/node) | 26-pointer trie=192.1 (216 B/node, computed) | sorted array=3.5 | AVL of strings=8.3
+ build time (s): compact trie from sorted list=0.039 AVL=0.050
+ weekly update: inserting 1000 new words into the trie = 1.63 ms (1.63 us per word)
+ VERIFY on a sample of 1000 words (compared with brute force over the sorted array):
+   exact look-up of existing words: 0 wrong | mistyped-word look-up: 0 wrong | autocomplete(first 10): 0 wrong | range listing (31 words): 0 wrong | spell suggestions (edit distance <=1): 0 wrong
+   spell check: mistyped words that received >=1 suggestion = 1000 of 1000 (average 1.48 suggestions)
+ response time per operation (average):
+   exact look-up         : compact trie      847 ns | sorted array      467 ns | AVL of strings      852 ns
+   autocomplete (10)     : compact trie      745 ns | sorted array      548 ns
+   range listing (~100) : compact trie     11.3 us | sorted array      0.8 us    (avg 101 words returned)
+   spell suggestions (<=1 edit): compact trie     32.8 us (avg 1.5 suggestions) | scan every word   3797.5 us
+
+================ dictionary of 2000000 words ================
+ words=2000000, average length=8.87, longest=15 (sorted already, unique)
+ nodes=7667375 (3.83 per word)
+ memory (MB): compact trie=92.0 (12 B/node) | 26-pointer trie=1656.2 (216 B/node, computed) | sorted array=35.7 | AVL of strings=83.7
+ build time (s): compact trie from sorted list=0.512 AVL=0.903
+ weekly update: inserting 1000 new words into the trie = 2.60 ms (2.60 us per word)
+ response time per operation (average):
+   exact look-up         : compact trie     1801 ns | sorted array     1247 ns | AVL of strings     2849 ns
+   autocomplete (10)     : compact trie      955 ns | sorted array     1086 ns
+   range listing (~100) : compact trie     13.2 us | sorted array      1.9 us    (avg 101 words returned)
+   spell suggestions (<=1 edit): compact trie    102.7 us (avg 1.8 suggestions) | scan every word  77713.2 us

@@ -1,0 +1,33 @@
+[T38,T39] red-black insertion of 10 20 30 15 25 5 (R = red, B = black)
+ insert 10
+   -> tree: 10B   [rotations this step=0, recolourings=1, properties OK=1, leftmost cache=10]
+ insert 20
+   -> tree: (10B - 20R)   [rotations this step=0, recolourings=0, properties OK=1, leftmost cache=10]
+ insert 30
+   case 3 (uncle black, straight): recolour 20 black, 10 red; rotate left at 10
+   -> tree: (20B 10R 30R)   [rotations this step=1, recolourings=2, properties OK=1, leftmost cache=10]
+ insert 15
+    case 1 (uncle 30 red): recolour parent 10 and uncle 30 black, grandparent 20 red
+   -> tree: (20B (10B - 15R) 30B)   [rotations this step=0, recolourings=4, properties OK=1, leftmost cache=10]
+ insert 25
+   -> tree: (20B (10B - 15R) (30B 25R -))   [rotations this step=0, recolourings=0, properties OK=1, leftmost cache=10]
+ insert 5
+   -> tree: (20B (10B 5R 15R) (30B 25R -))   [rotations this step=0, recolourings=0, properties OK=1, leftmost cache=5]
+ [T40] smallest process = leftmost node = 5 (cached pointer, O(1)); by walking left from the root: 5
+
+[T45,T46,T47] 10000 random insertions then the same 10000 keys deleted in another random order
+ checker (5 properties + BST order + cached leftmost for RB; balance factors for AVL) run after each of 20000 operations: 0 failures
+                               red-black        AVL
+ rotations, 10000 insertions        5777       7018
+ rotations, 10000 deletions         3859       3710
+ rotations per insertion           0.578      0.702
+ rotations per deletion            0.386      0.371
+ max rotations, one insertion          2          2
+ max rotations, one deletion           3          6
+ red-black recolourings (colour flips, no pointer change): insertions 23053, deletions 17812
+ height (levels) after inserts         16         16
+ height after 5000 deletions          16         15
+ bounds: red-black <= 2*log2(n+1) = 26.58 ; AVL <= 1.44*log2(n+2) = 18.81 ; minimum possible = 14
+
+[T48] keys inserted in increasing order 1..10000: red-black height=24 rotations=9976 ; AVL height=14 rotations=9986 ; checker failures=0
+      leftmost (smallest) after sorted insertion = 1; largest-key path length of red-black tree = 24
